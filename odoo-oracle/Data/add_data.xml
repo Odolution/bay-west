@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="add_date_oracle" model="ir.config_parameter">
+        <field name="key">tx_customer_interface_timestamp</field>
+        <field name="value">2022-01-04 12:15:21.775978</field>
+    </record>
+</odoo>

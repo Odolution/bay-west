@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+
+    <record id="view_partner_form_inherit" model="ir.ui.view">
+        <field name="name">res.partner.inherited</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+<!--        ref="res.res_partner_view"-->
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='website']" position="after">
+                <field name="tx_credit_days"/>
+                <field name="tx_profile_code"/>
+                
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_oracle_creds_main" model="ir.ui.view">
+
+        <field name="name">oracle.credentials.form</field>
+        <field name="model">oracle.credentials</field>
+        <field name="arch" type="xml">
+            <form string="Add Instance">
+
+                <sheet string="Credentials">
+
+                            <group>
+                                <field name="name" required='1'/>
+                                <field name="url" required='1'/>
+                                <field name="user_name" required='1'/>
+                                <field name="password" type="password" password="True" required='1'/>
+                                <button string="Force Sync" name="sync" class="btn-primary" type="object" />
+
+                            </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_report_volume_summery_kanban" model="ir.ui.view">
+        <field name="name">oracle.credentials.kanban</field>
+        <field name="model">oracle.credentials</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <templates>
+                    <t t-name="kanban-box" action="view_oracle_creds_main">
+
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_record_top mb16">
+                                <strong class="o_kanban_record_title">
+                                    <field name="name" />
+                                </strong>
+                            </div>
+                            <div class="oe_kanban_bottom_left text-muted">
+                                <!-- <span>
+                                    <field name="url" />
+                                </span> -->
+                            </div>
+
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <!-- show instances of credentials -->
+    <record id="action_add_creds" model="ir.actions.act_window">
+        <field name="name">Oracle Credentials</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">oracle.credentials</field>
+        <field name="view_mode">kanban,form,tree</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                    No Instance Found
+            </p>
+        </field>
+    </record>
+
+
+   <record id="customer_push_oracle" model="ir.cron">
+       <field name="name">Customer push to Oracle</field>
+       <field name="model_id" ref="model_oracle_credentials"/>
+       <field name="state">code</field>
+       <field name="code">model.syncAll()</field>
+       <field name="user_id" ref="base.user_root"/>
+       <field name='interval_number'>1</field>
+       <field name='interval_type'>hours</field>
+       <field name="numbercall">-1</field>
+       <field name="doall" eval="False"/>
+   </record>
+    <menuitem id="odoo_oracle_root" name="Odoo To Oracle" action="action_add_creds"  web_icon="odoo-oracle,static/icon.png" />
+</odoo>
